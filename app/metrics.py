@@ -24,7 +24,7 @@ def _default_period() -> tuple[str, str]:
     from datetime import timedelta
     now = datetime.now(timezone.utc)
     thirty_days_ago = now - timedelta(days=365)
-    return thirty_days_ago.isoformat().replace("+00:00", "Z"), (now \+ timedelta(days=1)).isoformat().replace(
+    return thirty_days_ago.isoformat().replace("+00:00", "Z"), (now + timedelta(days=1)).isoformat().replace(
         "+00:00", "Z"
     )
 
@@ -132,9 +132,8 @@ async def get_metrics(
 async def get_recent_events(store_id: str, limit: int = 20):
     query = "SELECT event_id, store_id, camera_id, visitor_id, event_type, timestamp, zone_id, dwell_ms, is_staff, confidence, queue_depth, sku_zone, session_seq FROM events WHERE store_id = ? ORDER BY timestamp DESC LIMIT ?"
     
-    async with db.get_db() as conn:
-        async with conn.execute(query, (store_id, limit)) as cursor:
-            rows = await cursor.fetchall()
+    cursor = await db.db.execute(query, (store_id, limit))
+    rows = await cursor.fetchall()
             
     events = []
     for r in rows:
