@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Store Intelligence — Live Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏬</text></svg>">
+</head>
+<body>
+    <!-- ─── Header ─── -->
+    <header id="app-header">
+        <div class="header-left">
+            <div class="logo">
+                <span class="logo-icon">◆</span>
+                <h1>Store Intelligence</h1>
+            </div>
+            <span class="tagline">Real-Time Retail Analytics</span>
+        </div>
+        <div class="header-center">
+            <div class="connection-status" id="connection-status">
+                <span class="status-dot" id="status-dot"></span>
+                <span class="status-text" id="status-text">Connecting…</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <label for="store-selector" class="sr-only">Select Store</label>
+            <select id="store-selector" class="store-select">
+                <option value="STORE_BLR_001">🏬 Brigade Bangalore</option>
+            </select>
+            <div class="last-update" id="last-update">
+                <span class="update-label">Last update</span>
+                <span class="update-time" id="update-time">—</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ─── Main Dashboard Grid ─── -->
+    <main id="dashboard-main">
+
+        <!-- ─── KPI Cards Row ─── -->
+        <section class="kpi-row" id="kpi-section" aria-label="Key Performance Indicators">
+            <article class="kpi-card" id="kpi-visitors">
+                <div class="kpi-icon">👥</div>
+                <div class="kpi-body">
+                    <span class="kpi-label">Unique Visitors</span>
+                    <span class="kpi-value" id="kpi-visitors-value">
+                        <span class="skeleton skeleton-number"></span>
+                    </span>
+                </div>
+            </article>
+            <article class="kpi-card" id="kpi-conversion">
+                <div class="kpi-icon">📈</div>
+                <div class="kpi-body">
+                    <span class="kpi-label">Conversion Rate</span>
+                    <span class="kpi-value" id="kpi-conversion-value">
+                        <span class="skeleton skeleton-number"></span>
+                    </span>
+                </div>
+            </article>
+            <article class="kpi-card" id="kpi-queue">
+                <div class="kpi-icon">🧾</div>
+                <div class="kpi-body">
+                    <span class="kpi-label">Queue Depth</span>
+                    <span class="kpi-value" id="kpi-queue-value">
+                        <span class="skeleton skeleton-number"></span>
+                    </span>
+                </div>
+            </article>
+            <article class="kpi-card" id="kpi-abandonment">
+                <div class="kpi-icon">🚪</div>
+                <div class="kpi-body">
+                    <span class="kpi-label">Abandonment Rate</span>
+                    <span class="kpi-value" id="kpi-abandonment-value">
+                        <span class="skeleton skeleton-number"></span>
+                    </span>
+                </div>
+            </article>
+            <article class="kpi-card" id="kpi-transactions">
+                <div class="kpi-icon">💳</div>
+                <div class="kpi-body">
+                    <span class="kpi-label">Transactions</span>
+                    <span class="kpi-value" id="kpi-transactions-value">
+                        <span class="skeleton skeleton-number"></span>
+                    </span>
+                </div>
+            </article>
+        </section>
+
+        <!-- ─── Middle Row: Funnel + Heatmap ─── -->
+        <section class="mid-row" id="mid-section">
+
+            <!-- Funnel Chart -->
+            <article class="panel funnel-panel" id="funnel-panel">
+                <div class="panel-header">
+                    <h2>Customer Funnel</h2>
+                    <span class="panel-badge" id="funnel-sessions">0 sessions</span>
+                </div>
+                <div class="funnel-chart" id="funnel-chart">
+                    <div class="funnel-stage" id="funnel-entry" data-stage="entry">
+                        <div class="funnel-bar">
+                            <div class="funnel-fill" id="funnel-fill-entry" style="width:100%"></div>
+                        </div>
+                        <div class="funnel-info">
+                            <span class="funnel-label">🚶 Entry</span>
+                            <span class="funnel-count" id="funnel-count-entry">—</span>
+                            <span class="funnel-dropoff" id="funnel-drop-entry"></span>
+                        </div>
+                    </div>
+                    <div class="funnel-connector"><span>▼</span></div>
+                    <div class="funnel-stage" id="funnel-zone" data-stage="zone_visit">
+                        <div class="funnel-bar">
+                            <div class="funnel-fill" id="funnel-fill-zone" style="width:0%"></div>
+                        </div>
+                        <div class="funnel-info">
+                            <span class="funnel-label">🏷️ Zone Visit</span>
+                            <span class="funnel-count" id="funnel-count-zone">—</span>
+                            <span class="funnel-dropoff" id="funnel-drop-zone"></span>
+                        </div>
+                    </div>
+                    <div class="funnel-connector"><span>▼</span></div>
+                    <div class="funnel-stage" id="funnel-billing" data-stage="billing_queue">
+                        <div class="funnel-bar">
+                            <div class="funnel-fill" id="funnel-fill-billing" style="width:0%"></div>
+                        </div>
+                        <div class="funnel-info">
+                            <span class="funnel-label">🧾 Billing Queue</span>
+                            <span class="funnel-count" id="funnel-count-billing">—</span>
+                            <span class="funnel-dropoff" id="funnel-drop-billing"></span>
+                        </div>
+                    </div>
+                    <div class="funnel-connector"><span>▼</span></div>
+                    <div class="funnel-stage" id="funnel-purchase" data-stage="purchase">
+                        <div class="funnel-bar">
+                            <div class="funnel-fill" id="funnel-fill-purchase" style="width:0%"></div>
+                        </div>
+                        <div class="funnel-info">
+                            <span class="funnel-label">💰 Purchase</span>
+                            <span class="funnel-count" id="funnel-count-purchase">—</span>
+                            <span class="funnel-dropoff" id="funnel-drop-purchase"></span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Zone Heatmap -->
+            <article class="panel heatmap-panel" id="heatmap-panel">
+                <div class="panel-header">
+                    <h2>Zone Heatmap</h2>
+                    <span class="panel-badge">Visitor Intensity</span>
+                </div>
+                <div class="heatmap-grid" id="heatmap-grid">
+                    <!-- Zones injected by JS -->
+                    <div class="skeleton skeleton-heatmap"></div>
+                </div>
+                <div class="heatmap-legend">
+                    <span class="legend-label">Low</span>
+                    <div class="legend-gradient"></div>
+                    <span class="legend-label">High</span>
+                </div>
+            </article>
+        </section>
+
+        <!-- ─── Bottom Row: Anomalies + Event Feed ─── -->
+        <section class="bottom-row" id="bottom-section">
+
+            <!-- Anomalies Panel -->
+            <article class="panel anomalies-panel" id="anomalies-panel">
+                <div class="panel-header">
+                    <h2>🚨 Active Anomalies</h2>
+                    <span class="panel-badge anomaly-count" id="anomaly-count">0</span>
+                </div>
+                <div class="anomaly-list" id="anomaly-list">
+                    <div class="anomaly-empty" id="anomaly-empty">
+                        <span class="empty-icon">✅</span>
+                        <p>No anomalies detected</p>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Live Event Feed -->
+            <article class="panel feed-panel" id="feed-panel">
+                <div class="panel-header">
+                    <h2>📡 Live Event Feed</h2>
+                    <span class="live-indicator" id="live-indicator">
+                        <span class="live-pulse"></span>
+                        LIVE
+                    </span>
+                </div>
+                <div class="event-feed" id="event-feed">
+                    <div class="feed-empty" id="feed-empty">
+                        <p>Waiting for events…</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- ─── Footer ─── -->
+    <footer id="app-footer">
+        <span>Store Intelligence v1.0</span>
+        <span class="footer-sep">·</span>
+        <span id="footer-uptime">Uptime: —</span>
+        <span class="footer-sep">·</span>
+        <span id="footer-db-status">DB: —</span>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

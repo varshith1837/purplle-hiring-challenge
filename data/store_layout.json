@@ -1,0 +1,66 @@
+{
+  "stores": [
+    {
+      "store_id": "STORE_BLR_001",
+      "store_name": "Brigade_Bangalore",
+      "city": "Bangalore",
+      "open_hours": "10:00-21:00",
+      "cameras": [
+        {
+          "camera_id": "CAM_ENTRY_01",
+          "file": "CAM 1.mp4",
+          "coverage": "entry_exit",
+          "description": "Entry/Exit threshold — front door area",
+          "entry_line_y_frac": 0.55,
+          "direction": "vertical",
+          "notes": "People entering move downward in frame, exiting move upward"
+        },
+        {
+          "camera_id": "CAM_FLOOR_01",
+          "file": "CAM 2.mp4",
+          "coverage": "main_floor",
+          "description": "Main floor zone coverage — product aisles",
+          "zones_in_view": ["SKINCARE", "MAKEUP", "HAIRCARE", "FRAGRANCE"]
+        },
+        {
+          "camera_id": "CAM_BILLING_01",
+          "file": "CAM 3.mp4",
+          "coverage": "billing",
+          "description": "Billing counter area",
+          "billing_zone_bbox_frac": [0.1, 0.3, 0.9, 0.9],
+          "queue_region_bbox_frac": [0.1, 0.1, 0.9, 0.5]
+        },
+        {
+          "camera_id": "CAM_FLOOR_02",
+          "file": "CAM 4.mp4",
+          "coverage": "main_floor",
+          "description": "Secondary floor camera — personal care & bath section",
+          "zones_in_view": ["PERSONAL_CARE", "BATH_BODY"]
+        },
+        {
+          "camera_id": "CAM_FLOOR_03",
+          "file": "CAM 5.mp4",
+          "coverage": "main_floor",
+          "description": "Tertiary floor camera — accessories and promotions area",
+          "zones_in_view": ["ACCESSORIES", "PROMOTIONS"]
+        }
+      ],
+      "zones": [
+        {"zone_id": "ENTRY", "zone_name": "Entry/Exit", "camera_ids": ["CAM_ENTRY_01"]},
+        {"zone_id": "SKINCARE", "zone_name": "Skincare", "camera_ids": ["CAM_FLOOR_01"]},
+        {"zone_id": "MAKEUP", "zone_name": "Makeup", "camera_ids": ["CAM_FLOOR_01"]},
+        {"zone_id": "HAIRCARE", "zone_name": "Hair Care", "camera_ids": ["CAM_FLOOR_01"]},
+        {"zone_id": "FRAGRANCE", "zone_name": "Fragrance", "camera_ids": ["CAM_FLOOR_01"]},
+        {"zone_id": "PERSONAL_CARE", "zone_name": "Personal Care", "camera_ids": ["CAM_FLOOR_02"]},
+        {"zone_id": "BATH_BODY", "zone_name": "Bath & Body", "camera_ids": ["CAM_FLOOR_02"]},
+        {"zone_id": "ACCESSORIES", "zone_name": "Accessories", "camera_ids": ["CAM_FLOOR_03"]},
+        {"zone_id": "PROMOTIONS", "zone_name": "Promotions", "camera_ids": ["CAM_FLOOR_03"]},
+        {"zone_id": "BILLING", "zone_name": "Billing Counter", "camera_ids": ["CAM_BILLING_01"]}
+      ]
+    }
+  ],
+  "pos_correlation": {
+    "time_window_seconds": 300,
+    "description": "A visitor in the billing zone within 5 minutes before a POS transaction counts as converted"
+  }
+}
