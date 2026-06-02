@@ -127,3 +127,32 @@ async def get_metrics(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to compute metrics for store {store_id}",
         ) from exc
+
+@router.get("/stores/{store_id}/events")
+async def get_recent_events(store_id: str, limit: int = 20):
+    query = "SELECT event_id, store_id, camera_id, visitor_id, event_type, timestamp, zone_id, dwell_ms, is_staff, confidence, queue_depth, sku_zone, session_seq FROM events WHERE store_id = ? ORDER BY timestamp DESC LIMIT ?"
+    
+    async with db.get_db() as conn:
+        async with conn.execute(query, (store_id, limit)) as cursor:
+            rows = await cursor.fetchall()
+            
+    events = []
+    for r in rows:
+        events.append({
+            "event_id": r["event_id"],
+            "store_id": r["store_id"],
+            "camera_id": r["camera_id"],
+            "visitor_id": r["visitor_id"],
+            "event_type": r["event_type"],
+            "timestamp": r["timestamp"],
+            "zone_id": r["zone_id"],
+            "dwell_ms": r["dwell_ms"],
+            "is_staff": bool(r["is_staff"]),
+            "confidence": r["confidence"],
+            "metadata": {
+                "queue_depth": r["queue_depth"],
+                "sku_zone": r["sku_zone"],
+                "session_seq": r["session_seq"],
+            }
+        })
+    return events
