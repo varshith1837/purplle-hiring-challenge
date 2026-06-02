@@ -1,0 +1,125 @@
+\documentclass[10pt]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{mathtools}
+\usepackage{booktabs}
+\usetheme{CambridgeUS}
+\usecolortheme{dolphin}
+
+\definecolor{myNewColorA}{RGB}{43,45,115} % Deep Blue/Purple
+\definecolor{myNewColorB}{RGB}{87,89,173} % Lighter Blue
+\definecolor{myNewColorC}{RGB}{145,147,214} % Soft Blue
+\setbeamercolor*{palette primary}{bg=myNewColorC}
+\setbeamercolor*{palette secondary}{bg=myNewColorB, fg=white}
+\setbeamercolor*{palette tertiary}{bg=myNewColorA, fg=white}
+\setbeamercolor*{titlelike}{fg=myNewColorA}
+\setbeamercolor*{title}{bg=myNewColorA, fg=white}
+\setbeamercolor*{item}{fg=myNewColorA}
+\setbeamercolor*{caption name}{fg=myNewColorA}
+\usefonttheme{professionalfonts}
+
+\setbeamerfont{title}{size=\large}
+\setbeamerfont{subtitle}{size=\small}
+\setbeamerfont{author}{size=\small}
+\setbeamerfont{date}{size=\small}
+\setbeamerfont{institute}{size=\small}
+
+\title[Store Intelligence]{Store Intelligence Platform\\Real-Time CCTV Analytics for Apex Retail}
+
+\author[Varshith]{
+    Varshith
+}
+
+\institute[Apex Retail Project]{
+Engineering Hiring Challenge \\
+Computer Vision \& Analytics API Pipeline
+}
+\date{2026}
+
+\begin{document}
+
+\frame{\titlepage}
+
+%--- Slide 1: What We Did ---
+\begin{frame}{What We Did}
+\textbf{The Input \& Data Sources}
+\begin{itemize}
+    \item \textbf{Raw CCTV Clips}: Analysed anonymised 1080p footage from 3 distinct angles (Entry/Exit, Main Floor, Billing Area).
+    \item \textbf{Offline Data}: Correlated visual tracking data with offline Point-of-Sale (POS) transaction CSVs.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Computer Vision Pipeline}
+\begin{itemize}
+    \item \textbf{Detection \& Tracking}: Implemented YOLOv8 for robust person detection and ByteTrack for consistent object tracking across frames.
+    \item \textbf{Re-ID \& Zones}: Built deterministic visitor identification logic (color histograms) and mapped coordinates to physical store zones (Skincare, Fragrance, etc.).
+    \item \textbf{Event Emission}: Generates highly structured, idempotent JSON events (\texttt{ENTRY}, \texttt{ZONE\_ENTER}, \texttt{BILLING\_QUEUE\_JOIN}).
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Intelligence API \& Dashboard}
+\begin{itemize}
+    \item \textbf{Backend}: Dockerised FastAPI application backed by SQLite to ingest events and compute live metrics.
+    \item \textbf{Frontend}: Built a Live Web Dashboard streaming the real-time event feed and store KPIs.
+\end{itemize}
+\end{frame}
+
+%--- Slide 2: Why We Did It ---
+\begin{frame}{Why We Did It}
+\textbf{Business Motivation}
+\begin{itemize}
+    \item While online channels have mature analytics (clicks, sessions, drop-offs), offline physical retail stores are historically a \textbf{data blind spot}.
+    \item Automating camera analytics enables store managers to see real-time customer funnels, identical to an e-commerce website.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Architectural Decisions}
+\begin{itemize}
+    \item \textbf{Idempotent Ingestion}: The \texttt{POST /events/ingest} endpoint guarantees idempotency via unique \texttt{event\_id}s, handling batch-processing failures gracefully.
+    \item \textbf{Decoupled Pipeline}: Separated the heavy CV inference script from the lightweight API backend to ensure the API never blocks during video processing.
+    \item \textbf{Graceful Degradation}: Returns structured HTTP 503 errors if the database goes offline, ensuring predictable behavior for client apps.
+\end{itemize}
+
+\vspace{0.3cm}
+\textbf{Handling Edge Cases}
+\begin{itemize}
+    \item Explicitly detects and filters out \textbf{Store Staff} from customer metrics.
+    \item Solved Re-entry inflation by merging rapid exits/re-entries.
+\end{itemize}
+\end{frame}
+
+%--- Slide 3: Results ---
+\begin{frame}{Results \& Deliverables}
+\textbf{Key System Capabilities}
+\begin{itemize}
+    \item \textbf{Live Customer Funnel}: Tracks a physical session from \textit{Entry $\rightarrow$ Zone Visit $\rightarrow$ Billing Queue $\rightarrow$ Purchase}.
+    \item \textbf{Automated POS Correlation}: Accurately identifies a "Purchase" by matching a visitor in the billing zone with a POS receipt timestamp within a 5-minute window.
+    \item \textbf{Live Anomaly Detection}: Actively warns managers of "Dead Zones" (no visits in 30 mins) and "Queue Spikes".
+\end{itemize}
+
+\vspace{0.2cm}
+\textbf{Production Readiness Metrics}
+\begin{center}
+\small
+\begin{tabular}{lc}
+\toprule
+\textbf{Feature} & \textbf{Status} \\
+\midrule
+Containerisation & Docker Compose (1-click run) \\
+Test Coverage & $>$ 70\% (Pytest) \\
+Documentation & Detailed README, DESIGN.md, CHOICES.md \\
+Database & SQLite (Thread-safe Async execution) \\
+API Performance & Millisecond latency, structured JSON errors \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{0.1cm}
+\textbf{Key Takeaways}
+\begin{itemize}
+    \item Successfully bridged the gap between unstructured pixels and highly structured business intelligence.
+    \item The hybrid CV + API approach is fully scalable and ready for production deployment across 40+ Apex Retail locations.
+\end{itemize}
+\end{frame}
+
+\end{document}

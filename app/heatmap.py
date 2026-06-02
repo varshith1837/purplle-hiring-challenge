@@ -56,7 +56,7 @@ def _default_period() -> tuple[str, str]:
     from datetime import timedelta
     now = datetime.now(timezone.utc)
     a_year_ago = now - timedelta(days=365)
-    return a_year_ago.isoformat().replace("+00:00", "Z"), (now \+ timedelta(days=1)).isoformat().replace(
+    return a_year_ago.isoformat().replace("+00:00", "Z"), (now + timedelta(days=1)).isoformat().replace(
         "+00:00", "Z"
     )
 

@@ -138,7 +138,7 @@ async def _detect_queue_spike(
                         f"{current_depth / avg_depth:.1f}× the average ({avg_depth:.1f})"
                     ),
                     suggested_action="Open additional billing counter or deploy staff to assist queue",
-                    detected_at=(now \+ timedelta(days=1)).isoformat().replace("+00:00", "Z"),
+                    detected_at=(now + timedelta(days=1)).isoformat().replace("+00:00", "Z"),
                 )
             )
     except Exception as exc:
@@ -153,7 +153,7 @@ async def _detect_conversion_drop(
         # Today's window
         today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         today_start_str = today_start.isoformat().replace("+00:00", "Z")
-        now_str = (now \+ timedelta(days=1)).isoformat().replace("+00:00", "Z")
+        now_str = (now + timedelta(days=1)).isoformat().replace("+00:00", "Z")
 
         # Today's conversion
         today_visitors = await db.get_unique_visitors(
@@ -214,7 +214,7 @@ async def _detect_conversion_drop(
                         f"{drop_pct:.1f}% below the 7-day average ({avg_7day_conversion:.2%})"
                     ),
                     suggested_action="Review store layout, check for stock issues, or increase staff assistance on the floor",
-                    detected_at=(now \+ timedelta(days=1)).isoformat().replace("+00:00", "Z"),
+                    detected_at=(now + timedelta(days=1)).isoformat().replace("+00:00", "Z"),
                 )
             )
     except Exception as exc:
@@ -271,7 +271,7 @@ async def _detect_dead_zones(
                         zone_id=zone_id,
                         detail=detail,
                         suggested_action=f"Investigate zone '{zone_id}' — consider repositioning products or adding signage",
-                        detected_at=(now \+ timedelta(days=1)).isoformat().replace("+00:00", "Z"),
+                        detected_at=(now + timedelta(days=1)).isoformat().replace("+00:00", "Z"),
                     )
                 )
     except Exception as exc:
